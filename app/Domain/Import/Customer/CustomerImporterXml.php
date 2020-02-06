@@ -10,6 +10,6 @@ class CustomerImporterXml extends CustomerImporter
 {
     public function load(string $file): void
     {
-        throw new LogicException('feature not ready yet');
+        throw new LogicException('The XML import feature not ready yet.');
     }
 }

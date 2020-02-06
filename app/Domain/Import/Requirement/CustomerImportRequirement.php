@@ -18,7 +18,7 @@ class CustomerImportRequirement implements ImportRequirementInterface
         return true;
     }
 
-    public function testDateOfBirth(CustomerModel $customer): bool
+    private function testDateOfBirth(CustomerModel $customer): bool
     {
         if ($customer->getDateOfBirth() === null) {
             return true;

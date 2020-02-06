@@ -14,11 +14,12 @@ class DateParser
         $parsedDate = DateTime::createFromFormat(DateTime::ATOM, $date);
 
         if ($parsedDate === false) {
-            $parsedDate = DateTime::createFromFormat('d/m/Y', $date);
+            // Be warned that without providing time PHP will use the current time
+            $parsedDate = DateTime::createFromFormat('d/m/Y H:i:s', $date . ' 00:00:00');
         }
 
         if ($parsedDate === false) {
-            $parsedDate = DateTime::createFromFormat('Y-m-d h:m:s', $date);
+            $parsedDate = DateTime::createFromFormat('Y-m-d H:i:s', $date);
         }
 
         return $parsedDate;

@@ -47,13 +47,14 @@ abstract class CustomerImporter
 
             $alreadyImported = $this->isCustomerDataAlreadyImported($line);
             $doesMeetsImportRequirement = $this->doesMeetImportRequirements($customerModel);
-
             if (!$alreadyImported && $doesMeetsImportRequirement) {
                 $customer = $this->customerRepository->createFromModel($customerModel, $this->getImportFingerprint($line));
                 $this->cardRepository->createFromModel($customer, $customerModel->getCreditCard());
             }
 
-            $callback($customerModel, $alreadyImported, $doesMeetsImportRequirement);
+            if ($callback){
+                $callback($customerModel, $alreadyImported, $doesMeetsImportRequirement);
+            }
         }
     }
 

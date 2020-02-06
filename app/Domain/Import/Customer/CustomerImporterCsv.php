@@ -10,6 +10,6 @@ class CustomerImporterCsv extends CustomerImporter
 {
     public function load(string $file): void
     {
-        throw new LogicException('feature not ready yet');
+        throw new LogicException('The CSV import feature not ready yet.');
     }
 }
