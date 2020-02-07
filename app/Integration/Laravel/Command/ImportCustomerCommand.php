@@ -23,6 +23,8 @@ class ImportCustomerCommand extends Command
 
     private CustomerImporterXml $xmlImporter;
 
+    private bool $shutdown = false;
+
     public function __construct(
         CustomerImporterJson $jsonImporter,
         CustomerImporterCsv $csvImporter,
@@ -37,6 +39,8 @@ class ImportCustomerCommand extends Command
 
     public function handle()
     {
+        $this->registerShutdown();
+
         $this->info(sprintf('Loading file...'));
         if (!$file = $this->getFile()) {
             return;
@@ -52,6 +56,11 @@ class ImportCustomerCommand extends Command
                 $this->line(sprintf('[<fg=green>IMPORT</>] <fg=magenta>%s</>', $customer->getName()));
             } else {
                 $this->line(sprintf('[<fg=yellow>IGNORE</>] <fg=magenta>%s</> does not met the import requirements.', $customer->getName()));
+            }
+
+            if ($this->shutdown) {
+                $this->info('Shutting down gracefully');
+                exit;
             }
         });
     }
@@ -91,4 +100,17 @@ class ImportCustomerCommand extends Command
                 throw  new LogicException(sprintf("'%s' is not a valid type. Valid options: [json|csv|xml]", $this->getType()));
         }
     }
+
+    private function registerShutdown(): void
+    {
+        pcntl_async_signals(true);
+
+        pcntl_signal(SIGINT, [$this, 'shutdown']);
+        pcntl_signal(SIGTERM, [$this, 'shutdown']);
+    }
+
+    public function shutdown($signal) {
+        $this->shutdown = true;
+    }
+
 }
